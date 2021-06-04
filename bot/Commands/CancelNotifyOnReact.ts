@@ -1,15 +1,14 @@
 import config from "../config";
 import Command from "../Classes/Command";
 import { checkArgumentsNotifyOnReact, extractEmoteName, forEachNotifyOnReact } from "../Classes/OtherFunctions";
-import { existingCommands } from "../Classes/CommandsDescription";
-import StoredNotifyOnReact, { IStoredNotifyOnReact } from "../Models/StoredNotifyOnReact";
+import StoredNotifyOnReact from "../Models/StoredNotifyOnReact";
 import Discord, {Message} from "discord.js";
 
 export class CancelNotifyOnReact extends Command {
-    static staticCommandName = "cancelNotifyOnReact"
+    readonly commandName = "cancelNotifyOnReact"
 
     constructor(message: Message) {
-        super(message, CancelNotifyOnReact.staticCommandName);
+        super(message);
     }
 
     async action(bot) {
@@ -29,7 +28,7 @@ export class CancelNotifyOnReact extends Command {
             messageId = checked.messageId,
             contentMessage = checked.contentMessage;
 
-        let emote = null;
+        let emote;
         if (typeof(args.e) != "undefined") {
             emote = extractEmoteName(args.e);
             if (!emote) {

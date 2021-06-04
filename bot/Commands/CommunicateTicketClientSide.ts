@@ -9,7 +9,7 @@ const usersInPrompt = {};
 export class CommunicateTicketClientSide extends Command {
 
     constructor(message: Message) {
-        super(message, null);
+        super(message);
     }
 
     async match() {

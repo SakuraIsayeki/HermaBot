@@ -5,10 +5,10 @@ import {Message} from "discord.js";
 
 export class ConfigWelcome extends Command {
 
-    static staticCommandName = "configWelcome";
+    readonly commandName = "configWelcome";
 
     constructor(message: Message) {
-        super(message, ConfigWelcome.staticCommandName);
+        super(message);
     }
 
     async action(bot) {

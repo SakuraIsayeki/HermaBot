@@ -8,14 +8,14 @@ import {Message} from "discord.js";
 
 export default class Command {
 
-    static staticCommandName: null|string = null;
+    readonly commandName: null|string = null;
+    readonly description: null|string = null;
+    readonly display: boolean = true;
 
-    commandName: null|string;
     message: Message;
 
-    constructor(message: Message, commandName: null|string) {
+    constructor(message: Message) {
         this.message = message;
-        this.commandName = commandName
     }
 
 
@@ -98,12 +98,10 @@ export default class Command {
     }
 
     checkPermissions(displayMsg = true) {
-        return Command.staticCheckPermissions(this.message,displayMsg);
+        return Command.staticCheckPermissions(this.message, this.commandName as string, displayMsg);
     }
 
-    static async staticCheckPermissions(message: Message, displayMsg = true) {
-        const commandName = this.staticCommandName;
-
+    static async staticCheckPermissions(message: Message, commandName: string, displayMsg = true) {
         if(message.channel.type == "dm" || config.roots.includes(message.author.id) || (message.member && message.member.hasPermission("ADMINISTRATOR"))) return true;
 
         if (message.member && message.guild) {

@@ -5,10 +5,10 @@ import Discord, {Message} from "discord.js";
 
 export class HistoryCmd extends Command {
 
-    static staticCommandName = "history";
+    readonly commandName = "history";
 
     constructor(message: Message) {
-        super(message, HistoryCmd.staticCommandName);
+        super(message);
     }
 
     async action(bot) {

@@ -1,21 +1,38 @@
 import config from "./config";
-
-import { existingCommands } from "./Classes/CommandsDescription";
-import WelcomeMessage, {IWelcomeMessage} from "./Models/WelcomeMessage";
-
+import Command from "./Classes/Command";
+import { CommandInfo, CommandsDescriptionHelper } from "./Classes/CommandsDescription";
+import WelcomeMessage, { IWelcomeMessage } from "./Models/WelcomeMessage";
 import * as Discord from "discord.js";
 import init from "./init";
-
+import { readdir } from "fs";
 
 
 
 const bot = new Discord.Client();
+export const commands = new Array<Command>();
+export const commandInfos = CommandsDescriptionHelper.generateCommandInfos(commands);
+
+
+readdir('./Commands/', (err, allFiles) => {
+    if (err) { 
+        console.log(err);
+    }
+
+    let files = allFiles.filter(f => f.split('.').pop() === 'js');
+
+    if (files.length <= 0) {
+        console.log('No commands found!');
+    }
+    else for(let file of files) {
+        commands.push(require(`./commands/${file}`) as Command);
+    }
+});
 
 // check all commands
 bot.on('message', async message => {
     //console.log(message.content)
-    for (let commandName in existingCommands) {
-        const commandClass = existingCommands[commandName].commandClass;
+    for (let commandName in commandInfos) {
+        const commandClass = commandInfos[commandName].commandClass;
         const command = new commandClass(message);
         command.check(bot);
     }

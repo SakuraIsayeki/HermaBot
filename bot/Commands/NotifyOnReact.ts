@@ -24,10 +24,10 @@ export class NotifyOnReact extends Command {
          }
         }*/
 
-    static staticCommandName = "notifyOnReact";
+    readonly commandName = "notifyOnReact";
 
     constructor(message: Message) {
-        super(message, NotifyOnReact.staticCommandName);
+        super(message);
         this.listenings = NotifyOnReact.listenings;
     }
 
@@ -135,7 +135,7 @@ export class NotifyOnReact extends Command {
         if (typeof(this.listenings[serverId][channelToListen.id][messageToListen.id]) == "undefined") {
             this.listenings[serverId][channelToListen.id][messageToListen.id] = {};
         }
-        this.listenings[serverId][channelToListen.id][messageToListen.id][emoteName] = true; // Set the key of that reaction listener in the listenings Object
+        this.listenings[serverId][channelToListen.id][messageToListen.id][emoteName as string] = true; // Set the key of that reaction listener in the listenings Object
 
         NotifyOnReact.saveNotifyOnReact(messageToListen, channelToWrite, messageToWrite, emoteName, channelToListen);
         NotifyOnReact.reactingAndNotifyOnMessage(messageToListen, channelToWrite, messageToWrite, emoteName, channelToListen);

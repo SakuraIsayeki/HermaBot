@@ -1,15 +1,16 @@
 import Command from "../Classes/Command";
-import { existingCommands } from "../Classes/CommandsDescription";
+import { commandInfos } from "../bot";
 import * as Discord from "discord.js";
 import config from "../config";
-import {Message} from "discord.js";
+import { Message } from "discord.js";
+import { CommandInfo } from "../Classes/CommandsDescription";
 
 export class Help extends Command {
 
-    static staticCommandName = "help";
+    readonly commandName = "help";
 
     constructor(message: Message) {
-        super(message, Help.staticCommandName);
+        super(message);
     }
 
     async action(bot) {
@@ -18,10 +19,10 @@ export class Help extends Command {
             .setTitle('Toutes les commandes')
             .setDescription("Liste de toutes les commandes :")
             .setTimestamp()
-        let allowedCommands: Array<string> = [];
-        for (let commandName in existingCommands) {
-            if (existingCommands[commandName].display && await existingCommands[commandName].commandClass.staticCheckPermissions(this.message, false)) {
-                allowedCommands.push(commandName);
+        let allowedCommands: Array<CommandInfo> = [];
+        for (let commandInfo of commandInfos) {
+            if (commandInfo.display && await commandInfo.commandClass.staticCheckPermissions(this.message, false)) {
+                allowedCommands.push(commandInfo);
             }
         }
         if (allowedCommands.length == 0) {
@@ -33,7 +34,7 @@ export class Help extends Command {
             for (let commandName of allowedCommands) {
                 Embed.addFields({
                     name: config.command_prefix+commandName+" :",
-                    value: existingCommands[commandName].msg
+                    value: commandName.msg
                 });
             }
         }
@@ -43,11 +44,11 @@ export class Help extends Command {
 
     async saveHistory() {} // overload saveHistory of Command class to save nothing in the history
 
-    async checkPermissions(displayMsg) { // overload checkPermission of Command class to permit all users to execute the help command
+    async checkPermissions(_: any) { // overload checkPermission of Command class to permit all users to execute the help command
         return true;
     }
 
-    static async staticCheckPermissions(message: Message, displayMsg = true) { // overload the staticCheckPermission of Command class to permit all users to execute the help command
+    static async staticCheckPermissions(_: any) { // overload the staticCheckPermission of Command class to permit all users to execute the help command
         return true
     }
 }

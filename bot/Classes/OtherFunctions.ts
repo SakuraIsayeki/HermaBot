@@ -1,8 +1,8 @@
-import { existingCommands } from "./CommandsDescription";
+import { commandInfos } from "../bot";
 import History, {IHistory} from "../Models/History";
 import config from "../config";
 
-export function extractEmoteName(emote) {
+export function extractEmoteName(emote: string) {
     let regex = new RegExp("\<(a)?\:[a-zA-Z0-9_-]{2,18}\\:[0-9]{18}\\>");
     if (!regex.test(emote)) return false;
     let emoteName = emote.split(":")[1].split(":")[0];
@@ -17,7 +17,7 @@ export function addMissingZero(number, n = 2) {
     return number;
 }
 
-export function extractChannelId(channelMention) {
+export function extractChannelId(channelMention: string) {
     let channelId = channelMention.split("<#")[1];
     if (channelId == undefined) return false;
     if (channelId[channelId.length-1] != ">") return false;
@@ -87,9 +87,9 @@ export async function getHistory(message,args) {
         errors.push({name: "-c or --command", value: "Please use -c or --command but not the both"});
     } else if (typeof(args.c) != "undefined" || typeof(args.command) != "undefined") {
         commandName = typeof(args.c) != "undefined" ? args.c : args.command;
-        if (!Object.keys(existingCommands).includes(<string>commandName) || !existingCommands[<string>commandName].display) {
+        if (!Object.keys(commandInfos).includes(<string>commandName) || !commandInfos[<string>commandName].display) {
             errors.push({name: "That command can't be grepped", value: "'"+config.command_prefix+commandName+"' command can't be grepped in "+config.command_prefix+"history"});
-        } else if (!await existingCommands[<string>commandName].commandClass.checkPermissions(message,false)) {
+        } else if (!await commandInfos[<string>commandName].commandClass.checkPermissions(message,false)) {
             errors.push({name: "You are not allowed", value: "You are not allowed to check '"+config.command_prefix+commandName+"'"});
         }
     }
@@ -182,8 +182,8 @@ export async function getHistory(message,args) {
         where.commandName = commandName;
     } else {
         where.commandName = { $nin: [] };
-        for (let aCommand in existingCommands) {
-            if (!await existingCommands[aCommand].commandClass.staticCheckPermissions(message,false)) {
+        for (let aCommand in commandInfos) {
+            if (!await commandInfos[aCommand].commandClass.staticCheckPermissions(message,false)) {
                 where.commandName.$nin.push(aCommand);
             }
         }
@@ -191,11 +191,11 @@ export async function getHistory(message,args) {
 
     const histories:Array<IHistory> = await History.find(where).limit(limit).sort({dateTime: sort});
 
-    return {errors: [], histories: histories, limit: limit};
+    return { errors: [], histories: histories, limit: limit };
 }
 
-export async function checkArgumentsNotifyOnReact(message,args) {  // Vérifie la validité des arguments passés pour récupérer les écoutes de réactions
-    let channelId = null;
+export async function checkArgumentsNotifyOnReact(message, args) {  // Vérifie la validité des arguments passés pour récupérer les écoutes de réactions
+    let channelId;
     let channel;
 
     let errors: Array<Object> = [];
@@ -254,7 +254,7 @@ export async function checkArgumentsNotifyOnReact(message,args) {  // Vérifie l
 
 export async function forEachNotifyOnReact(callback, channelId, channel, messageId, contentMessage, messageCommand) {
     const serverId = messageCommand.guild.id;
-    let listenings = existingCommands.notifyOnReact.commandClass.listenings[serverId];
+    let listenings = commandInfos["notifyOnReact"].commandClass.listenings[serverId];
 
     if (typeof(listenings) == "undefined") {
         callback(false);

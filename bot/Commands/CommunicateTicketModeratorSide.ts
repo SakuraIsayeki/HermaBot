@@ -8,7 +8,7 @@ const ticketCommunicationChannels = {};
 export class CommunicateTicketModeratorSide extends Command {
 
     constructor(message: Message) {
-        super(message, null);
+        super(message);
     }
 
     async match() {

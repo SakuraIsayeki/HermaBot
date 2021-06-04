@@ -5,10 +5,10 @@ import Discord, {Message} from "discord.js";
 
 export class ListNotifyOnReact extends Command {
 
-    static staticCommandName = "listNotifyOnReact";
+    readonly commandName = "listNotifyOnReact";
 
     constructor(message: Message) {
-        super(message, ListNotifyOnReact.staticCommandName);
+        super(message);
     }
 
     async action(bot) {

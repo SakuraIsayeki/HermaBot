@@ -1,10 +1,9 @@
-import {existingCommands} from "./Classes/CommandsDescription";
-import TicketCommunication, {ITicketCommunication} from "./Models/TicketCommunication";
-import TicketConfig , {ITicketConfig} from "./Models/TicketConfig";
+import { NotifyOnReact } from "./Commands/NotifyOnReact"
+import { Client } from "discord.js";
 
-export default function init(bot) {
+export default function init(bot: Client) {
     setTimeout(async () => {
         console.log("Detect stored notifyOnReacts in the database and apply them")
-        existingCommands.notifyOnReact.commandClass.applyNotifyOnReactAtStarting(bot);
+        NotifyOnReact.applyNotifyOnReactAtStarting(bot);
     }, 5000);
 }

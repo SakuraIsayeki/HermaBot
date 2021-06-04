@@ -1,9 +1,9 @@
 import config from "../config";
 import Command from "../Classes/Command";
-import { existingCommands } from "../Classes/CommandsDescription";
+import { commandInfos } from "../bot";
 import Permissions, { IPermissions } from "../Models/Permissions";
-import Discord, {Message} from "discord.js";
-import {getRolesFromList} from "../Classes/OtherFunctions";
+import Discord, { Message } from "discord.js";
+import { getRolesFromList } from "../Classes/OtherFunctions";
 
 interface IPerm {
     0: string; // set or add
@@ -12,10 +12,10 @@ interface IPerm {
 }
 
 export class Perm extends Command {
-    static staticCommandName = "perm";
+    readonly commandName = "perm";
 
     constructor(message: Message) {
-        super(message, Perm.staticCommandName);
+        super(message);
     }
 
     async action(bot) { //%perm set commandName @role
@@ -52,7 +52,7 @@ export class Perm extends Command {
             });
             return false;
         }
-        if (!Object.keys(existingCommands).includes(args[1]) || !existingCommands[args[1]].display) {
+        if (!Object.keys(commandInfos).includes(args[1]) || !commandInfos[args[1]].display) {
             this.sendErrors({
                 name: "Command name doesn't exist",
                 value: "The command '"+args[1]+"' doesn't exist"

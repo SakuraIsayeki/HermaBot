@@ -6,10 +6,10 @@ import Discord, {Message} from "discord.js";
 
 export class ConfigTicket extends Command {
 
-    static staticCommandName = "configTicket";
+    readonly commandName = "configTicket";
 
     constructor(message: Message) {
-        super(message, ConfigTicket.staticCommandName);
+        super(message);
     }
 
     async action(bot) {
